@@ -9,7 +9,7 @@ public abstract class Unit
     public virtual int Armor { get; set; }
     public float CritChance { get; set; }
     public float CritMultiplier { get; set; }
-    public float EvasionChance { get; set; } = 0.15f;
+    public virtual float EvasionChance { get; set; } = 0.15f;
 
     protected Unit(int damage, int hp, int armor)
     {

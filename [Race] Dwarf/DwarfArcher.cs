@@ -4,7 +4,7 @@
 
 public sealed class DwarfArcher : RangedUnit
 {
-    public DwarfArcher() : base(damage: 15, hp: 80, armor: 50, range: 300)
+    public DwarfArcher() : base(damage: 25, hp: 150, armor: 50, range: 300)
     {
         UnitRace = Unit.Race.Dwarf;
         CritChance = 0.20f;

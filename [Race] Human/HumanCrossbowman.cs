@@ -4,7 +4,7 @@
 
 public sealed class HumanCrossbowman : RangedUnit
 {
-    public HumanCrossbowman() : base(damage: 15, hp: 180, armor: 35, range: 400)
+    public HumanCrossbowman() : base(damage: 35, hp: 100, armor: 35, range: 400)
     {
         UnitRace = Unit.Race.Human;
         CritChance = 0.40f;

@@ -4,12 +4,13 @@
 
 public sealed class TrollShaman : RangedUnit
 {
-    public TrollShaman() : base(damage: 15, hp: 100, armor: 70, range: 250)
+    public TrollShaman() : base(damage: 15, hp: 150, armor: 80, range: 250)
     {
         UnitRace = Unit.Race.Troll;
         CritChance = 0.40f;
         CritMultiplier = 1.4f;
     }
+
 
     public override void Attack(Unit target)
     {

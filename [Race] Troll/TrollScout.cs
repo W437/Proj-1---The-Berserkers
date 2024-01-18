@@ -11,8 +11,9 @@ public sealed class TrollScout : AssassinUnit
         UnitRace = Unit.Race.Troll;
         CritChance = 0.40f;
         CritMultiplier = 1.4f;
-        EvasionChance += 0.05f;
+        EvasionChance += 0.25f;
     }
+
 
     public override void Attack(Unit target)
     {
