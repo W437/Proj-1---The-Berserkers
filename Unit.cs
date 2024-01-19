@@ -6,7 +6,7 @@ public abstract class Unit
 {
     public virtual int Damage { get; set; }
     public virtual int HP { get; set; }
-    public virtual int Armor { get; set; }
+    public virtual int Armor { get; set; } // armor mitigates damage
     public float CritChance { get; set; }
     public float CritMultiplier { get; set; }
     public virtual float EvasionChance { get; set; } = 0.15f;

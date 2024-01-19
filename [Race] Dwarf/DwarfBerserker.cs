@@ -6,7 +6,7 @@ public sealed class DwarfBerserker : AssassinUnit
 {
     public DwarfBerserker() : base(damage: 25, hp: 150, armor: 30)
     {
-        UnitRace = Unit.Race.Dwarf;
+        UnitRace = Race.Dwarf;
         CritChance = 0.35f;
         CritMultiplier = 1.7f;
         EvasionChance += 0.08f;

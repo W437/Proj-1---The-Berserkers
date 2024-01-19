@@ -6,7 +6,7 @@ public sealed class HumanRogue : AssassinUnit
 {
     public HumanRogue() : base(damage: 25, hp: 110, armor: 50)
     {
-        UnitRace = Unit.Race.Human;
+        UnitRace = Race.Human;
         CritChance = 0.15f;
         CritMultiplier = 1.5f;
         EvasionChance += 0.1f;

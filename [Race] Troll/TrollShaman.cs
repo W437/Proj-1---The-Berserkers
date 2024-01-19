@@ -6,7 +6,7 @@ public sealed class TrollShaman : RangedUnit
 {
     public TrollShaman() : base(damage: 15, hp: 150, armor: 80, range: 250)
     {
-        UnitRace = Unit.Race.Troll;
+        UnitRace = Race.Troll;
         CritChance = 0.40f;
         CritMultiplier = 1.4f;
     }
@@ -73,6 +73,10 @@ public sealed class TrollShaman : RangedUnit
 
             // + crit chance for each consecutive hit
             combinedCritChance += consecutiveHits * 0.05f;
+            if (consecutiveHits > 0)
+            {
+                Console.WriteLine($"Streak {consecutiveHits} - Keep 'em coming!");
+            }
 
             Random random = new Random();
             bool isCriticalHit = random.NextDouble() < combinedCritChance;

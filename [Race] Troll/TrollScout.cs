@@ -2,13 +2,11 @@
 // Wael Abd Elal
 // -----------------------------
 
-using static HumanRogue;
-
 public sealed class TrollScout : AssassinUnit
 {
     public TrollScout() : base(damage: 10, hp: 60, armor: 80)
     {
-        UnitRace = Unit.Race.Troll;
+        UnitRace = Race.Troll;
         CritChance = 0.40f;
         CritMultiplier = 1.4f;
         EvasionChance += 0.25f;
@@ -124,6 +122,7 @@ public sealed class TrollScout : AssassinUnit
 
             int lifestealAmount = (int)(finalDamage * LifestealPercentage);
             attacker.ReceiveHealing(lifestealAmount);
+            Console.WriteLine($"{target} left puzzled! TrollScout chants 'Abracadabra, health for me!' and scores {lifestealAmount} HP! Trolltastic!");
         }
     }
 }
