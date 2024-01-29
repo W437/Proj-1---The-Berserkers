@@ -9,31 +9,27 @@ public sealed class DwarfArcher : RangedUnit
         UnitRace = Race.Dwarf;
         CritChance = 0.20f;
         CritMultiplier = 2.0f;
+        CurrentProjectile = CreateProjectile();
     }
 
     public override void Attack(Unit target)
     {
-        Console.WriteLine("Dwarf Archer releases a powerful arrow!");
-        Projectile projectile = CreateProjectile();
-        projectile.Hit(this, target);
+        base.Attack(target);
     }
 
     public override void Defend(Unit attacker, int damageAmount)
     {
         base.Defend(attacker, damageAmount);
-        Console.WriteLine("Dwarf Archer raises a shield in defense!");
-        ReceiveDamage(attacker.Damage);
     }
 
-    public override void ReceiveDamage(int amount)
+    protected override string AttackMessage()
     {
-        int damageReduction = Armor;
-        HP -= Math.Max(0, amount - damageReduction);
+        return "releases a powerful arrow!";
+    }
 
-        if (HP <= 0)
-        {
-            Console.WriteLine("Dwarf Archer has been defeated!");
-        }
+    protected override string DefendMessage()
+    {
+        return "raises a shield in defense!";
     }
 
     protected override Projectile CreateProjectile()

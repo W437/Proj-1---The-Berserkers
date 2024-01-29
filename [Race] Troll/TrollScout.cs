@@ -10,55 +10,28 @@ public sealed class TrollScout : AssassinUnit
         CritChance = 0.40f;
         CritMultiplier = 1.4f;
         EvasionChance += 0.25f;
+        CurrentWeapon = typeof(Trollstriker);
     }
-
 
     public override void Attack(Unit target)
     {
         base.Attack(target);
-        AssassinWeapon weapon = CreateWeapon(typeof(Trollstriker));
-
-        if (IsStealth)
-        {
-            Console.WriteLine("Troll Scout performs a precise assassination with increased damage!");
-            IsStealth = false;
-            weapon.UseWeapon(this, target, IsStealth);
-        }
-        else
-        {
-            Console.WriteLine("Troll Scout attacks normally.");
-            weapon.UseWeapon(this, target);
-        }
     }
 
     public override void Defend(Unit attacker, int damageAmount)
     {
+        base.Defend(attacker, damageAmount);
+    }
 
-        Random random = new Random();
-        double randomEvasion = random.NextDouble();
+    protected override string AttackMessage(bool IsStealth)
+    {
+        return IsStealth ? "performs a precise assassination with increased damage!" : "attacks normally!";
+    }
 
-        if (randomEvasion <= EvasionChance)
-        {
-            Console.WriteLine("Troll Scout evades the attack!");
-        }
 
-        else
-        {
-            int finalDamage;
-            if (IsStealth)
-            {
-                int damageReductionInStealth = Armor / 2;
-                finalDamage = Math.Max(0, damageAmount - damageReductionInStealth);
-                IsStealth = false;
-            }
-            else
-            {
-                int damageReduction = Armor;
-                finalDamage = Math.Max(0, damageAmount - damageReduction);
-            }
-
-            ReceiveDamage(finalDamage);
-        }
+    protected override string DefendMessage()
+    {
+        return "evades the attack!";
     }
 
     public override void ReceiveDamage(int amount)
@@ -120,9 +93,7 @@ public sealed class TrollScout : AssassinUnit
 
             target.ReceiveDamage(finalDamage);
 
-            int lifestealAmount = (int)(finalDamage * LifestealPercentage);
-            attacker.ReceiveHealing(lifestealAmount);
-            Console.WriteLine($"{target} left puzzled! TrollScout chants 'Abracadabra, health for me!' and scores {lifestealAmount} HP! Trolltastic!");
+            
         }
     }
 }

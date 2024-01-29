@@ -5,20 +5,82 @@
 public abstract class AssassinUnit : Unit
 {
     protected virtual bool IsStealth { get; set; }
+    protected virtual AssassinWeapon? CurrentWeapon { get; set; }
 
-    protected AssassinUnit(int damage, int hp, int armor) : base(damage, hp, armor)
+    protected AssassinUnit(int damage, int hp, int armor) : base(damage, hp, armor) 
     {
         IsStealth = true;
     }
 
     public override void Attack(Unit target)
-    {
-        Console.WriteLine("Assassin unit attacks!");
+    {   
+        string unitName = this.GetType().Name;
+
+        if (IsStealth)
+        {
+            Console.WriteLine($"{unitName} {AttackMessage(true)}");
+            IsStealth = false;
+            CurrentWeapon.UseWeapon(this, target, IsStealth);
+        }
+        else
+        {
+            Console.WriteLine($"{unitName} {AttackMessage()}");
+            CurrentWeapon.UseWeapon(this, target, IsStealth);
+        }
     }
 
-    public override void Defend(Unit attacker, int damangeAmount)
+    public override void Defend(Unit attacker, int damageAmount)
     {
-        Console.WriteLine("Assassin unit evades the attack!");
+        string unitName = this.GetType().Name;
+
+        Random random = new Random();
+        double randomEvasion = random.NextDouble();
+
+        if (randomEvasion <= EvasionChance)
+        {
+            Console.WriteLine($"{unitName} gracefully avoids the attack!");
+        }
+
+        else
+        {
+            int finalDamage;
+            if (IsStealth)
+            {
+                // Reduce damage taken by half while in stealth
+                int damageReductionInStealth = Armor / 2;
+                finalDamage = Math.Max(0, damageAmount - damageReductionInStealth);
+                IsStealth = false;
+            }
+            else
+            {
+                int damageReduction = Armor;
+                finalDamage = Math.Max(0, damageAmount - damageReduction);
+            }
+
+            ReceiveDamage(finalDamage);
+        }
+    }
+
+    public override void ReceiveDamage(int amount)
+    {
+        string unitName = this.GetType().Name;
+        int damageReduction = Armor;
+        HP -= Math.Max(0, amount - damageReduction);
+
+        if (HP <= 0)
+        {
+            Console.WriteLine($"{unitName} has been defeated!");
+        }
+    }
+
+    protected virtual string AttackMessage(bool IsStealth = false)
+    {
+        return "attacks!";
+    }
+
+    protected virtual string DefendMessage()
+    {
+        return "evades the attack!";
     }
 
     public void Hide()
@@ -60,6 +122,19 @@ public abstract class AssassinUnit : Unit
             Console.WriteLine($"{attacker} attacks with {weaponName}!");
             Console.WriteLine(isCriticalHit ? "Critical hit!" : "Normal hit!");
             target.Defend(attacker, finalDamage);
+
+            if(weaponName == "TrollStriker")
+            {
+
+                int lifestealAmount = (int)(finalDamage * attLifestealPercentage);
+                attacker.ReceiveHealing(lifestealAmount);
+                Console.WriteLine($"{target} left puzzled! TrollScout chants 'Abracadabra, health for me!' and scores {lifestealAmount} HP! Trolltastic!");
+            }
+        }
+
+        public static implicit operator AssassinWeapon(Type v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

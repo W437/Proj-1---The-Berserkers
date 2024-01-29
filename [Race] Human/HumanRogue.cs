@@ -2,6 +2,8 @@
 // Wael Abd Elal
 // -----------------------------
 
+using static TrollScout;
+
 public sealed class HumanRogue : AssassinUnit
 {
     public HumanRogue() : base(damage: 25, hp: 110, armor: 50)
@@ -10,65 +12,27 @@ public sealed class HumanRogue : AssassinUnit
         CritChance = 0.15f;
         CritMultiplier = 1.5f;
         EvasionChance += 0.1f;
+        CurrentWeapon = typeof(VenomStinger);
     }
 
     public override void Attack(Unit target)
     {
         base.Attack(target);
-        AssassinWeapon weapon = CreateWeapon(typeof(VenomStinger));
-
-        if (IsStealth)
-        {
-            Console.WriteLine("HumanRogue strikes from the shadows with increased damage!");
-            IsStealth = false;
-            weapon.UseWeapon(this, target, IsStealth);
-        }
-        else
-        {
-            Console.WriteLine("HumanRogue attacks normally.");
-            weapon.UseWeapon(this, target, IsStealth);
-        }
     }
 
     public override void Defend(Unit attacker, int damageAmount)
     {
-
-        Random random = new Random();
-        double randomEvasion = random.NextDouble();
-
-        if (randomEvasion <= EvasionChance)
-        {
-            Console.WriteLine("Human Rogue evades with finesse!");
-        }
-
-        else
-        {
-            int finalDamage;
-            if (IsStealth)
-            {
-                int damageReductionInStealth = Armor / 2;
-                finalDamage = Math.Max(0, damageAmount - damageReductionInStealth);
-                IsStealth = false;
-            }
-            else
-            {
-                int damageReduction = Armor;
-                finalDamage = Math.Max(0, damageAmount - damageReduction);
-            }
-
-            ReceiveDamage(finalDamage);
-        }
+        base.Defend(attacker, damageAmount);
     }
 
-    public override void ReceiveDamage(int amount)
+    protected override string AttackMessage(bool IsStealth)
     {
-        int damageReduction = Armor;
-        HP -= Math.Max(0, amount - damageReduction);
+        return IsStealth ? "strikes from the darkness with increased damage!" : "attacks boldly!";
+    }
 
-        if (HP <= 0)
-        {
-            Console.WriteLine("Human Rogue has been defeated!");
-        }
+    protected override string DefendMessage()
+    {
+        return "evades with finesse!";
     }
 
     public override AssassinWeapon CreateWeapon(Type weaponType)

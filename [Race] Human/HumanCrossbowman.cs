@@ -13,27 +13,23 @@ public sealed class HumanCrossbowman : RangedUnit
 
     public override void Attack(Unit target)
     {
-        Console.WriteLine("Human Crossbowman fires a deadly bolt!");
-        Projectile projectile = CreateProjectile();
-        projectile.Hit(this, target);
+        base.Attack(target);
     }
+
 
     public override void Defend(Unit attacker, int damageAmount)
     {
         base.Defend(attacker, damageAmount);
-        Console.WriteLine("Human Crossbowman takes cover and defends!");
-        ReceiveDamage(attacker.Damage);
     }
 
-    public override void ReceiveDamage(int amount)
+    protected override string AttackMessage()
     {
-        int damageReduction = Armor;
-        HP -= Math.Max(0, amount - damageReduction);
+        return "fires a deadly bolt!";
+    }
 
-        if (HP <= 0)
-        {
-            Console.WriteLine("Human Crossbowman has been defeated!");
-        }
+    protected override string DefendMessage()
+    {
+        return "takes cover and defends!";
     }
 
     protected override Projectile CreateProjectile()

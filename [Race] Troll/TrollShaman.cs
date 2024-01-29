@@ -2,6 +2,8 @@
 // Wael Abd Elal
 // -----------------------------
 
+using static TrollScout;
+
 public sealed class TrollShaman : RangedUnit
 {
     public TrollShaman() : base(damage: 15, hp: 150, armor: 80, range: 250)
@@ -9,34 +11,28 @@ public sealed class TrollShaman : RangedUnit
         UnitRace = Race.Troll;
         CritChance = 0.40f;
         CritMultiplier = 1.4f;
+        CurrentProjectile = CreateProjectile();
     }
-
 
     public override void Attack(Unit target)
     {
-        Console.WriteLine("Troll shaman casts a powerful spell!");
-        Projectile projectile = CreateProjectile();
-        projectile.Hit(this, target);
+        base.Attack(target);
     }
 
     public override void Defend(Unit attacker, int damageAmount)
     {
         base.Defend(attacker, damageAmount);
-        Console.WriteLine("Troll Shaman evades the attack!");
-        ReceiveDamage(attacker.Damage);
     }
 
-    public override void ReceiveDamage(int amount)
+    protected override string AttackMessage()
     {
-        int damageReduction = Armor;
-        HP -= Math.Max(0, amount - damageReduction);
-
-        if (HP <= 0)
-        {
-            Console.WriteLine("Troll Shaman has been defeated!");
-        }
+        return "casts a powerful spell!";
     }
 
+    protected override string DefendMessage()
+    {
+        return "evades the attack!";
+    }
 
     protected override Projectile CreateProjectile()
     {
