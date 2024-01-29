@@ -2,15 +2,15 @@
 // Wael Abd Elal
 // -----------------------------
 
-public sealed class HumanRogue : AssassinUnit
+public sealed class HumanSniper : AssassinUnit
 {
-    public HumanRogue() : base(damage: 25, hp: 110, armor: 50)
+    public HumanSniper() : base(damage: 25, hp: 110, armor: 50)
     {
         UnitRace = Race.Human;
         CritChance = 0.15f;
         CritMultiplier = 1.5f;
         EvasionChance += 0.1f;
-        CurrentWeapon = CreateWeapon(typeof(VenomStinger));
+        CurrentWeapon = CreateWeapon(typeof(PhantomSniper));
     }
 
     public override void Attack(Unit target)
@@ -37,29 +37,29 @@ public sealed class HumanRogue : AssassinUnit
     {
         switch (weaponType.Name)
         {
-            case nameof(VenomStinger):
-                return new VenomStinger();
+            case nameof(PhantomSniper):
+                return new PhantomSniper();
             default:
                 return null;
         }
     }
 
-    public sealed class VenomStinger : AssassinWeapon
+    public sealed class PhantomSniper : AssassinWeapon
     {
-        public VenomStinger() : base(baseDamage: 30, additionalCritChance: 0.15f, critMultiplierBoost: 0.5f) { }
+        public PhantomSniper() : base(baseDamage: 50, additionalCritChance: 0.10f, critMultiplierBoost: 0.3f) { }
 
         public override void UseWeapon(Unit attacker, Unit target, bool isStealthMode, int extraDamage = 0)
         {
-            Console.WriteLine("Human Rogue performs a Swift Attack with the Venom Stinger!");
+            Console.WriteLine("Human Sniper performs a Swift Attack with the Phantom Sniper!");
 
-            Random random = new Random();
+            Random random = new Random(); 
             int randomValue = random.Next(1, 101);
 
             if (randomValue <= 20) // 20%
             {
-                int swiftAttackDamage = Damage * 2; // 2x damage in swift attack
+                int swiftAttackDamage = (int)(Damage * 1.5f); // 1.5x damage in swift attack
                 base.UseWeapon(attacker, target, isStealthMode, swiftAttackDamage);
-                Console.WriteLine("Swift Attack! Damage X2!");
+                Console.WriteLine("Swift Attack! Damage 1.5X");
             }
             else
             {

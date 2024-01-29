@@ -10,6 +10,7 @@ public abstract class AssassinUnit : Unit
     protected AssassinUnit(int damage, int hp, int armor) : base(damage, hp, armor) 
     {
         IsStealth = true;
+        //CurrentWeapon = CreateWeapon(typeof(AssassinWeapon));
     }
 
     public override void Attack(Unit target)
@@ -20,12 +21,12 @@ public abstract class AssassinUnit : Unit
         {
             Console.WriteLine($"{unitName} {AttackMessage(true)}");
             IsStealth = false;
-            CurrentWeapon.UseWeapon(this, target, IsStealth);
+            CurrentWeapon?.UseWeapon(this, target, IsStealth);
         }
         else
         {
             Console.WriteLine($"{unitName} {AttackMessage()}");
-            CurrentWeapon.UseWeapon(this, target, IsStealth);
+            CurrentWeapon?.UseWeapon(this, target, IsStealth);
         }
     }
 
@@ -123,18 +124,15 @@ public abstract class AssassinUnit : Unit
             Console.WriteLine(isCriticalHit ? "Critical hit!" : "Normal hit!");
             target.Defend(attacker, finalDamage);
 
-            if(weaponName == "TrollStriker")
+
+            switch(weaponName)
             {
-
-                int lifestealAmount = (int)(finalDamage * attLifestealPercentage);
-                attacker.ReceiveHealing(lifestealAmount);
-                Console.WriteLine($"{target} left puzzled! TrollScout chants 'Abracadabra, health for me!' and scores {lifestealAmount} HP! Trolltastic!");
+                case "TrollStriker":
+                    int lifestealAmount = (int)(finalDamage * 0.15f); // todo: get the predetermined percentage from the attacker's weapon
+                    attacker.ReceiveHealing(lifestealAmount);
+                    Console.WriteLine($"{target} left puzzled! TrollScout chants 'Abracadabra, health for me!' and scores {lifestealAmount} HP! Trolltastic!");
+                break;
             }
-        }
-
-        public static implicit operator AssassinWeapon(Type v)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -2,15 +2,15 @@
 // Wael Abd Elal
 // -----------------------------
 
-public sealed class TrollScout : AssassinUnit
+public sealed class TrollGunslinger : AssassinUnit
 {
-    public TrollScout() : base(damage: 10, hp: 60, armor: 80)
+    public TrollGunslinger() : base(damage: 15, hp: 70, armor: 30)
     {
         UnitRace = Race.Troll;
-        CritChance = 0.40f;
+        CritChance = 0.65f;
         CritMultiplier = 1.4f;
-        EvasionChance += 0.25f;
-        CurrentWeapon = CreateWeapon(typeof(Trollstriker));
+        EvasionChance += 0.29f;
+        CurrentWeapon = CreateWeapon(typeof(Shadowblade));
     }
 
     public override void Attack(Unit target)
@@ -41,7 +41,7 @@ public sealed class TrollScout : AssassinUnit
 
         if (HP <= 0)
         {
-            Console.WriteLine("Troll Scout has been defeated!");
+            Console.WriteLine("Troll Gunslinger has been defeated!");
         }
     }
 

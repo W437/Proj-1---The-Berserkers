@@ -2,8 +2,6 @@
 // Wael Abd Elal
 // -----------------------------
 
-using static TrollScout;
-
 public sealed class DwarfBerserker : AssassinUnit
 {
     public DwarfBerserker() : base(damage: 25, hp: 150, armor: 30)
@@ -12,7 +10,7 @@ public sealed class DwarfBerserker : AssassinUnit
         CritChance = 0.35f;
         CritMultiplier = 1.7f;
         EvasionChance += 0.08f;
-        CurrentWeapon = typeof(Dagger);
+        CurrentWeapon = CreateWeapon(typeof(Dagger));
     }
 
     public override void Attack(Unit target)

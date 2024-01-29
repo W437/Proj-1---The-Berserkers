@@ -2,8 +2,6 @@
 // Wael Abd Elal
 // -----------------------------
 
-using static TrollScout;
-
 public sealed class TrollShaman : RangedUnit
 {
     public TrollShaman() : base(damage: 15, hp: 150, armor: 80, range: 250)
