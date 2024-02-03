@@ -4,13 +4,16 @@
 
 public sealed class TrollGunslinger : AssassinUnit
 {
-    public TrollGunslinger() : base(damage: 15, hp: 70, armor: 30)
+    public TrollGunslinger() : base(damage: new Dice(2, 7, 3), hp: 70, armor: 30)
     {
         UnitRace = Race.Troll;
         CritChance = 0.65f;
         CritMultiplier = 1.4f;
         EvasionChance += 0.29f;
+        CarryCapacity = 70;
         CurrentWeapon = CreateWeapon(typeof(Shadowblade));
+        DefenseRating = new Dice(1, 10, 0);
+        HitChance = new Dice(1, 5, 0);
     }
 
     public override void Attack(Unit target)
@@ -28,7 +31,6 @@ public sealed class TrollGunslinger : AssassinUnit
         return IsStealth ? "performs a precise assassination with increased damage!" : "attacks normally!";
     }
 
-
     protected override string DefendMessage()
     {
         return "evades the attack!";
@@ -38,7 +40,7 @@ public sealed class TrollGunslinger : AssassinUnit
     {
         int damageReduction = Armor;
         HP -= Math.Max(0, amount - damageReduction);
-
+    
         if (HP <= 0)
         {
             Console.WriteLine("Troll Gunslinger has been defeated!");

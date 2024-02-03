@@ -4,13 +4,16 @@
 
 public sealed class HumanSniper : AssassinUnit
 {
-    public HumanSniper() : base(damage: 25, hp: 110, armor: 50)
+    public HumanSniper() : base(damage: new Dice(2, 7, 3), hp: 110, armor: 50)
     {
         UnitRace = Race.Human;
         CritChance = 0.15f;
         CritMultiplier = 1.5f;
         EvasionChance += 0.1f;
+        CarryCapacity = 50;
         CurrentWeapon = CreateWeapon(typeof(PhantomSniper));
+        DefenseRating = new Dice(1, 10, 0);
+        HitChance = new Dice(1, 5, 0);
     }
 
     public override void Attack(Unit target)

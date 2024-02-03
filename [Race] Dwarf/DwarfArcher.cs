@@ -2,14 +2,17 @@
 // Wael Abd Elal
 // -----------------------------
 
-public sealed class DwarfArcher : RangedUnit
+public sealed class DwarfTank : RangedUnit
 {
-    public DwarfArcher() : base(damage: 25, hp: 150, armor: 50, range: 300)
+    public DwarfTank() : base(damage: new Dice(2, 6, 3), hp: 200, armor: 10, range: 200)
     {
         UnitRace = Race.Dwarf;
-        CritChance = 0.20f;
-        CritMultiplier = 2.0f;
+        CritChance = 0.10f;
+        CritMultiplier = 1.5f;
         CurrentProjectile = CreateProjectile();
+        CarryCapacity = 90;
+        DefenseRating = new Dice(1, 10, 0);
+        HitChance = new Dice(1, 5, 0);
     }
 
     public override void Attack(Unit target)
@@ -34,7 +37,7 @@ public sealed class DwarfArcher : RangedUnit
 
     protected override Projectile CreateProjectile()
     {
-        return new ArrowProjectile(Damage);
+        return new ArrowProjectile(15);
     }
 
     public sealed class ArrowProjectile : Projectile

@@ -4,14 +4,17 @@
 
 public abstract class Unit
 {
-    public virtual int Damage { get; set; }
+    public virtual Dice Damage { get; set; }
+    public virtual Dice HitChance { get; set; }
+    public virtual Dice DefenseRating { get; set; }
     public virtual int HP { get; set; }
     public virtual int Armor { get; set; } // armor mitigates damage
+    public virtual int CarryCapacity { get; set; }
     public float CritChance { get; set; }
     public float CritMultiplier { get; set; }
     public virtual float EvasionChance { get; set; } = 0.15f;
 
-    protected Unit(int damage, int hp, int armor)
+    protected Unit(Dice damage, int hp, int armor)
     {
         Damage = damage;
         HP = hp;
@@ -19,11 +22,11 @@ public abstract class Unit
     }
 
     public abstract void Attack(Unit target);
-    public abstract void Defend(Unit attacker, int damangeAmount);
-
+    public abstract void Defend(Unit attacker, int damageAmount);
     public abstract void ReceiveDamage(int amount);
-
     public virtual void ReceiveHealing(int amount) { HP += amount; }
+    public abstract void WeatherEffect(WeatherEffects effect);
+    public Race UnitRace { get; set; }
 
     public enum Race
     {
@@ -32,5 +35,13 @@ public abstract class Unit
         Human,
     }
 
-    public Race UnitRace { get; set; }
+    public enum WeatherEffects
+    {
+        Sunny,
+        Cloudy,
+        Rainy,
+        Snowy,
+        Windy,
+        Foggy
+    }
 }

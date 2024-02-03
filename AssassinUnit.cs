@@ -7,37 +7,42 @@ public abstract class AssassinUnit : Unit
     protected virtual bool IsStealth { get; set; }
     protected virtual AssassinWeapon? CurrentWeapon { get; set; }
 
-    protected AssassinUnit(int damage, int hp, int armor) : base(damage, hp, armor) 
+    protected AssassinUnit(Dice damage, int hp, int armor) : base(damage, hp, armor) 
     {
         IsStealth = true;
-        //CurrentWeapon = CreateWeapon(typeof(AssassinWeapon));
     }
 
     public override void Attack(Unit target)
     {   
-        string unitName = this.GetType().Name;
+        string unitName = GetType().Name;
 
-        if (IsStealth)
+        if(HitChance.Roll() > 4) // miss chance 1/5
         {
-            Console.WriteLine($"{unitName} {AttackMessage(true)}");
-            IsStealth = false;
-            CurrentWeapon?.UseWeapon(this, target, IsStealth);
+            Console.WriteLine($"{unitName} misses.");
         }
         else
         {
-            Console.WriteLine($"{unitName} {AttackMessage()}");
-            CurrentWeapon?.UseWeapon(this, target, IsStealth);
+            if (IsStealth)
+            {
+                Console.WriteLine($"{unitName} {AttackMessage(true)}");
+                IsStealth = false;
+                CurrentWeapon?.UseWeapon(this, target, IsStealth);
+            }
+            else
+            {
+                Console.WriteLine($"{unitName} {AttackMessage()}");
+                CurrentWeapon?.UseWeapon(this, target, IsStealth);
+            }
         }
     }
 
     public override void Defend(Unit attacker, int damageAmount)
     {
-        string unitName = this.GetType().Name;
+        string unitName = GetType().Name;
 
-        Random random = new Random();
-        double randomEvasion = random.NextDouble();
+        double randomEvasion = Random.Shared.Next(1, 11);
 
-        if (randomEvasion <= EvasionChance)
+        if (randomEvasion <= DefenseRating.Roll())
         {
             Console.WriteLine($"{unitName} gracefully avoids the attack!");
         }
@@ -64,7 +69,7 @@ public abstract class AssassinUnit : Unit
 
     public override void ReceiveDamage(int amount)
     {
-        string unitName = this.GetType().Name;
+        string unitName = GetType().Name;
         int damageReduction = Armor;
         HP -= Math.Max(0, amount - damageReduction);
 
@@ -89,6 +94,41 @@ public abstract class AssassinUnit : Unit
         IsStealth = true;
     }
 
+    public override void WeatherEffect(WeatherEffects effect)
+    {
+        Console.WriteLine($"Weather changed to: {effect}");
+        switch (effect)
+        {
+            case WeatherEffects.Sunny:
+                HitChance.ModifyModifier(1);
+                break;
+
+            case WeatherEffects.Cloudy:
+                EvasionChance -= 0.1f;
+                break;
+
+            case WeatherEffects.Rainy:
+                DefenseRating.ModifyModifier(-1);
+                break;
+
+            case WeatherEffects.Snowy:
+                DefenseRating.ModifyModifier(-2);
+                break;
+
+            case WeatherEffects.Windy:
+                DefenseRating.ModifyModifier(-1);
+                break;
+
+            case WeatherEffects.Foggy:
+                EvasionChance += 0.15f;
+                break;
+
+            default:
+                Console.WriteLine("No weather effect applied.");
+                break;
+        }
+    }
+
     public abstract AssassinWeapon CreateWeapon(Type weaponType);
 
     public abstract class AssassinWeapon
@@ -107,7 +147,7 @@ public abstract class AssassinUnit : Unit
         public virtual void UseWeapon(Unit attacker, Unit target, bool isStealthMode = false, int extraDamage = 0)
         {
             string weaponName = GetType().Name;
-            int totalDamage = Damage + attacker.Damage + extraDamage;
+            int totalDamage = attacker.Damage.Roll() + extraDamage;
             float combinedCritChance = attacker.CritChance + AdditionalCritChance;
             float combinedCritMultiplier = attacker.CritMultiplier + CritMultiplierBoost;
 
@@ -123,7 +163,6 @@ public abstract class AssassinUnit : Unit
             Console.WriteLine($"{attacker} attacks with {weaponName}!");
             Console.WriteLine(isCriticalHit ? "Critical hit!" : "Normal hit!");
             target.Defend(attacker, finalDamage);
-
 
             switch(weaponName)
             {

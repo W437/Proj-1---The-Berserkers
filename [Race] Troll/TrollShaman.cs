@@ -4,12 +4,15 @@
 
 public sealed class TrollShaman : RangedUnit
 {
-    public TrollShaman() : base(damage: 15, hp: 150, armor: 80, range: 250)
+    public TrollShaman() : base(damage: new Dice(2, 7, 3), hp: 150, armor: 80, range: 250)
     {
         UnitRace = Race.Troll;
         CritChance = 0.40f;
         CritMultiplier = 1.4f;
+        CarryCapacity = 50;
         CurrentProjectile = CreateProjectile();
+        DefenseRating = new Dice(1, 10, 0);
+        HitChance = new Dice(1, 5, 0);
     }
 
     public override void Attack(Unit target)
@@ -34,7 +37,7 @@ public sealed class TrollShaman : RangedUnit
 
     protected override Projectile CreateProjectile()
     {
-        return new ShamanicEnergyProjectile(Damage);
+        return new ShamanicEnergyProjectile(15);
     }
 
     public sealed class ShamanicEnergyProjectile : Projectile
@@ -75,7 +78,7 @@ public sealed class TrollShaman : RangedUnit
             Random random = new Random();
             bool isCriticalHit = random.NextDouble() < combinedCritChance;
 
-            int totalDamage = Damage + attacker.Damage;
+            int totalDamage = Damage + attacker.Damage.Roll(true);
             int finalDamage = isCriticalHit ? (int)(totalDamage * combinedCritMultiplier) : totalDamage;
 
             Console.WriteLine(isCriticalHit ? "Critical hit!" : "Normal hit!");

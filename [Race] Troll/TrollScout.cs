@@ -4,13 +4,16 @@
 
 public sealed class TrollScout : AssassinUnit
 {
-    public TrollScout() : base(damage: 10, hp: 60, armor: 80)
+    public TrollScout() : base(damage: new Dice(2, 7, 3), hp: 60, armor: 80)
     {
         UnitRace = Race.Troll;
         CritChance = 0.40f;
         CritMultiplier = 1.4f;
         EvasionChance += 0.25f;
+        CarryCapacity = 50;
         CurrentWeapon = CreateWeapon(typeof(Trollstriker));
+        DefenseRating = new Dice(1, 10, 0);
+        HitChance = new Dice(1, 5, 0);
     }
 
     public override void Attack(Unit target)

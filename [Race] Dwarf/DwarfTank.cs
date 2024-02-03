@@ -2,15 +2,15 @@
 // Wael Abd Elal
 // -----------------------------
 
-public sealed class HumanCrossbowman : RangedUnit
+public sealed class DwarfArcher : RangedUnit
 {
-    public HumanCrossbowman() : base(damage: new Dice(2, 6, 3), hp: 100, armor: 35, range: 400)
+    public DwarfArcher() : base(damage: new Dice(2, 7, 3), hp: 150, armor: 50, range: 300)
     {
-        UnitRace = Race.Human;
-        CritChance = 0.40f;
-        CritMultiplier = 1.2f;
-        CarryCapacity = 70;
+        UnitRace = Race.Dwarf;
+        CritChance = 0.20f;
+        CritMultiplier = 2.0f;
         CurrentProjectile = CreateProjectile();
+        CarryCapacity = 70;
         DefenseRating = new Dice(1, 10, 0);
         HitChance = new Dice(1, 5, 0);
     }
@@ -20,7 +20,6 @@ public sealed class HumanCrossbowman : RangedUnit
         base.Attack(target);
     }
 
-
     public override void Defend(Unit attacker, int damageAmount)
     {
         base.Defend(attacker, damageAmount);
@@ -28,24 +27,22 @@ public sealed class HumanCrossbowman : RangedUnit
 
     protected override string AttackMessage()
     {
-        return "fires a deadly bolt!";
+        return "releases a powerful arrow!";
     }
 
     protected override string DefendMessage()
     {
-        return "takes cover and defends!";
+        return "raises a shield in defense!";
     }
 
     protected override Projectile CreateProjectile()
     {
-        return new BoltProjectile(15);
+        return new ArrowProjectile(15);
     }
 
-    public sealed class BoltProjectile : Projectile
+    public sealed class ArrowProjectile : Projectile
     {
-        public BoltProjectile(int baseDamage) :
-            base(baseDamage, additionalCritChance: 0.15f, critMultiplierBoost: 2.5f)
-        { }
+        public ArrowProjectile(int baseDamage) : 
+            base(baseDamage, additionalCritChance: 0.15f, critMultiplierBoost: 0.5f) { }
     }
-
 }
