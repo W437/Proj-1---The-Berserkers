@@ -1,7 +1,6 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
-
 public abstract class AssassinUnit : Unit
 {
     protected virtual bool IsStealth { get; set; }

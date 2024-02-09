@@ -1,7 +1,6 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
-
 public sealed class DwarfBerserker : AssassinUnit
 {
     public DwarfBerserker() : base(damage: new Dice(3, 7, 1), hp: 80, armor: 30)

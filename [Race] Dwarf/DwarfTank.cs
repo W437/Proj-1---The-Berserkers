@@ -1,7 +1,6 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
-
 public sealed class DwarfArcher : RangedUnit
 {
     public DwarfArcher() : base(damage: new Dice(2, 7, 3), hp: 150, armor: 50, range: 300)

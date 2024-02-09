@@ -1,7 +1,6 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
-
 public sealed class TrollShaman : RangedUnit
 {
     public TrollShaman() : base(damage: new Dice(2, 7, 3), hp: 150, armor: 80, range: 250)

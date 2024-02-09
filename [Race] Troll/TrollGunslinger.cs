@@ -1,7 +1,6 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
-
 public sealed class TrollGunslinger : AssassinUnit
 {
     public TrollGunslinger() : base(damage: new Dice(2, 7, 3), hp: 70, armor: 30)

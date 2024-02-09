@@ -1,7 +1,6 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
-
 public sealed class HumanCrossbowman : RangedUnit
 {
     public HumanCrossbowman() : base(damage: new Dice(2, 6, 3), hp: 100, armor: 35, range: 400)

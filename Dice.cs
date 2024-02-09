@@ -1,4 +1,7 @@
-﻿public struct Dice
+﻿// ---- C# II (Dor Ben Dor) ----
+// Wael Abd Elal
+// -----------------------------
+public struct Dice
 {
     private uint Scalar;
     private uint BaseDie;

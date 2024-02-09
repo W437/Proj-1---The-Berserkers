@@ -1,9 +1,6 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
-
-using static AssassinUnit;
-
 public abstract class RangedUnit : Unit
 {   
     protected float Range { get; set; }
@@ -116,7 +113,7 @@ public abstract class RangedUnit : Unit
     protected abstract Projectile CreateProjectile();
     
     public abstract class Projectile
-    {
+    {   
         public int Damage { get; set; }
         public float AdditionalCritChance { get; private set; }
         public float CritMultiplierBoost { get; private set; }
@@ -133,7 +130,7 @@ public abstract class RangedUnit : Unit
             // Roll the dice for both attacker's and unit's damage
             int attackerDamage = attacker.Damage.Roll(true);
             int totalDamage = attackerDamage;
-
+        
             float combinedCritChance = attacker.CritChance + AdditionalCritChance;
             float combinedCritMultiplier = attacker.CritMultiplier + CritMultiplierBoost;
 
