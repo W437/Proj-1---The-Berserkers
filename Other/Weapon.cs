@@ -13,34 +13,24 @@ public abstract class Weapon
         CritMultiplierBoost = critMultiplierBoost;
     }
 
-    public virtual int Use(Unit attacker, Unit target, bool isStealthMode = false, int extraDamage = 0)
+    public virtual int Use(Unit attacker, Unit target, bool isStealthMode = false, int extraDamage = 0, bool isCritHit = false)
     {
         int totalDamage = BaseDamage + extraDamage; 
-        float combinedCritChance = attacker.CritChance + AdditionalCritChance;
-        float combinedCritMultiplier = attacker.CritMultiplier + CritMultiplierBoost;
 
-        if (isStealthMode)
-        {
-            combinedCritChance += 0.25f; // Stealth mode increases crit chance
-        }
+        int finalDamage = totalDamage;
 
-        bool isCriticalHit = Random.Shared.NextDouble() < combinedCritChance;
-        int finalDamage = isCriticalHit ? (int)(totalDamage * combinedCritMultiplier) : totalDamage;
-
-        ApplyWeaponEffect(attacker, target, ref finalDamage, isCriticalHit); // Apply any specific weapon effects
-
-        Console.WriteLine($"{attacker.GetType().Name} uses {WeaponName} against {target.GetType().Name} for {finalDamage} damage{(isCriticalHit ? " with a CRITICAL HIT!" : "")}.");
+        ApplyWeaponEffect(attacker, target, ref finalDamage, isCritHit); // Apply any specific weapon effects
 
         return finalDamage;
     }
 
-    protected virtual void ApplyWeaponEffect(Unit attacker, Unit target, ref int damage, bool isCriticalHit) { }
+    protected virtual void ApplyWeaponEffect(Unit attacker, Unit target, ref int damage, bool isCritHit) { }
 }
 
 
 public class Dagger : Weapon
 {
-    public Dagger() : base(baseDamage: 50, additionalCritChance: 0.15f, critMultiplierBoost: 0.5f) 
+    public Dagger() : base(baseDamage: 15, additionalCritChance: 0.15f, critMultiplierBoost: 0.13f) 
     {
         WeaponName = "Dagger";
     }
@@ -60,7 +50,7 @@ public sealed class PoisonedDagger : Dagger
 public sealed class VenomStinger : Weapon
 {
     private int swiftPercentage = 20;
-    public VenomStinger() : base(baseDamage: 30, additionalCritChance: 0.15f, critMultiplierBoost: 0.5f)
+    public VenomStinger() : base(baseDamage: 20, additionalCritChance: 0.15f, critMultiplierBoost: 0.05f)
     {
         WeaponName = "Venom Stinger";
     }
@@ -72,11 +62,9 @@ public sealed class VenomStinger : Weapon
         if (rand <= swiftPercentage)
         {
             damage *= 2; // 2x damage in swift attack
-            Console.WriteLine("Swift Attack! Damage X2!");
-        }
-        else
-        {
-            Console.WriteLine("Normal Attack.");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(" [Swift Attack! Damage 2X]");
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
@@ -85,7 +73,7 @@ public sealed class VenomStinger : Weapon
 public sealed class PhantomSniper : Weapon
 {
     private int swiftPercentage = 20;
-    public PhantomSniper() : base(baseDamage: 50, additionalCritChance: 0.10f, critMultiplierBoost: 0.3f)
+    public PhantomSniper() : base(baseDamage: 25, additionalCritChance: 0.10f, critMultiplierBoost: 0.05f)
     {
         WeaponName = "Phantom Sniper";
     }
@@ -109,7 +97,7 @@ public sealed class TrollStriker : Weapon
 {
     private const float lifestealPercentage = 0.15f; // 15% lifesteal
 
-    public TrollStriker() : base(baseDamage: 30, additionalCritChance: 0.10f, critMultiplierBoost: 0.5f)
+    public TrollStriker() : base(baseDamage: 20, additionalCritChance: 0.10f, critMultiplierBoost: 0.05f)
     {
         WeaponName = "Troll Striker";
     }
@@ -118,14 +106,16 @@ public sealed class TrollStriker : Weapon
     {
         int lifestealAmount = (int)(damage * lifestealPercentage);
         attacker.Heal(lifestealAmount);
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"{target} left puzzled! TrollScout chants 'Abracadabra, health for me!' and scores {lifestealAmount} HP! Trolltastic!");
+        Console.ForegroundColor = ConsoleColor.White;
     }
 }
 
 
 public sealed class Shadowblade : Weapon
 {
-    public Shadowblade() : base(baseDamage: 35, additionalCritChance: 0.20f, critMultiplierBoost: 0.5f)
+    public Shadowblade() : base(baseDamage: 15, additionalCritChance: 0.20f, critMultiplierBoost: 0.1f)
     {
         WeaponName = "Shadow Blade";
     }

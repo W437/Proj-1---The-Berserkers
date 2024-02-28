@@ -8,9 +8,10 @@ public sealed class DwarfTank : RangedUnit
     {
         UnitRace = Race.Dwarf;
         SetCritChance(0.10f);
-        SetCritChance(1.5f);
-        EquippedWeapon = new BoltProjectile();
+        SetCritMultiplier(1.25f);
         SetCarryCapacity(90);
+        SetEvasionChance(0.15f);
+        EquippedWeapon = new BoltProjectile();
         DefenseRating = new Dice(1, 10, 0);
         HitChance = new Dice(1, 5, 0);
     }

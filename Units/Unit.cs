@@ -16,7 +16,7 @@ public abstract class Unit
     public void SetCarryCapacity(int v) => CarryCapacity = v;
     public void SetCritChance(float v) => CritChance = v;
     public void SetCritMultiplier(float v) => CritMultiplier = v;
-
+    public void SetEvasionChance(float v) => EvasionChance = v;
 
     protected Unit(Dice damage, int hp, int armor)
     {
@@ -32,23 +32,36 @@ public abstract class Unit
 
         Console.Write($"{GetType().Name} attacks ");
 
-        if (HitChance.Roll() <= 4)
+        if (HitChance.Roll() <= 1)
         {
             Console.WriteLine("and misses.");
             return;
         }
 
-        int weaponDamage = EquippedWeapon.Use(this, target);
+        float combinedCritChance = CritChance;
+
+        if (this is AssassinUnit && ((AssassinUnit)this).IsStealth)
+        {
+            combinedCritChance += 0.2f; // Stealth mode increases crit chance (for assassin unit)
+        }
+
+        bool _isCritHit = combinedCritChance > Random.Shared.NextDouble();
+
+        int weaponDamage = EquippedWeapon.Use(this, target, isCritHit: _isCritHit);
         int totalDamage = weaponDamage + RollDamage();
 
-        if (Random.Shared.NextDouble() < CritChance)
+        float combinedCritMultiplier = CritMultiplier + EquippedWeapon.CritMultiplierBoost;
+
+        Console.Write($"using {EquippedWeapon.WeaponName} against {target.GetType().Name}");
+
+        if (_isCritHit)
         {
-            totalDamage = (int)(totalDamage * CritMultiplier);
-            Console.WriteLine($"and lands a critical hit for {totalDamage} damage!");
+            totalDamage = (int)(totalDamage * combinedCritMultiplier);
+            Console.WriteLine($" with a critical hit for {totalDamage} damage!");
         }
         else
         {
-            Console.WriteLine($"and hits for {totalDamage} damage.");
+            Console.WriteLine($" for {totalDamage} damage.");
         }
 
         // Target defends against this attack.
@@ -60,35 +73,39 @@ public abstract class Unit
     {
         if (IsAlive())
         {
+            int finalDamage = 0;
             // General defense mechanism for all units - if (defense or stealth mode)
-            if (RollDefenseRating() > 6 || (this is AssassinUnit && ((AssassinUnit)this).IsStealth))
+            if (RollDefenseRating() > 6)
             {
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine($" => {GetType().Name} gracefully avoids the attack!\n");
-                if (this is AssassinUnit)
+                Console.ForegroundColor = ConsoleColor.White;
+
+                if (this is AssassinUnit && ((AssassinUnit)this).IsStealth)
                 {
                     ((AssassinUnit)this).IsStealth = false; // exit stealth mode after avoiding the attack
                 }
+                return;
             }
             else
             {
                 // Handling damage
-                int finalDamage;
                 if (this is AssassinUnit && ((AssassinUnit)this).IsStealth)
                 {
                     // Reduce damage taken by half while in stealth for AssassinUnit
                     int damageReductionInStealth = Armor / 2;
-                    finalDamage = Math.Max(0, damageAmount - damageReductionInStealth);
+                    finalDamage = Math.Max(0, Math.Abs(damageAmount - damageReductionInStealth));
                     ((AssassinUnit)this).IsStealth = false; // exit stealth mode after taking damage
                 }
                 else
                 {
                     // Standard damage reduction for all units
-                    finalDamage = Math.Max(0, damageAmount - Armor);
+                    finalDamage = Math.Max(0, Math.Abs(damageAmount - Armor));
                 }
-
-                TakeDamage(finalDamage);
-                Console.WriteLine($"{GetType().Name} receives {finalDamage} damage.");
             }
+
+            Console.WriteLine($"{GetType().Name} receives {finalDamage} final damage.");
+            TakeDamage(finalDamage);
         }
     }
 
@@ -98,7 +115,10 @@ public abstract class Unit
         HP -= damage;
         if (HP <= 0)
         {
-            Console.WriteLine($"{GetType().Name} has been defeated!");
+            HP = 0;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"[X] {GetType().Name} has been defeated!");
+            Console.ForegroundColor = ConsoleColor.White;
         }
         else
         {

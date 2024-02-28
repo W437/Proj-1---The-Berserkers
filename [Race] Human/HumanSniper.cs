@@ -3,13 +3,13 @@
 // -----------------------------
 public sealed class HumanSniper : AssassinUnit
 {
-    public HumanSniper() : base(damage: new Dice(2, 7, 3), hp: 70, armor: 50)
+    public HumanSniper() : base(damage: new Dice(2, 7, 3), hp: 70, armor: 13)
     {
         UnitRace = Race.Human;
-        CritChance = 0.15f;
-        CritMultiplier = 1.5f;
-        EvasionChance += 0.1f;
-        CarryCapacity = 50;
+        SetCritChance(0.15f);
+        SetCritMultiplier(1.2f);
+        SetCarryCapacity(50);
+        SetEvasionChance(0.15f);
         EquippedWeapon = new PhantomSniper();
         DefenseRating = new Dice(1, 10, 0);
         HitChance = new Dice(1, 5, 0);
