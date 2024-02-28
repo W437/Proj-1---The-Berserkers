@@ -88,7 +88,38 @@ public class Combat
             Weather currentEffect = GetRandomWeather();
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"\n **{currentEffect} weather has started and will last for {weatherDuration} turns.");
+            Console.WriteLine($"\n***{currentEffect} weather has started and will last for {weatherDuration} turns.");
+
+            switch (currentEffect)
+            {
+                case Weather.Sunny:
+                    Console.WriteLine("*Sunny weather improves hit chance and range.");
+                    break;
+
+                case Weather.Cloudy:
+                    Console.WriteLine("*Cloudy weather reduces evasion chance.");
+                    break;
+
+                case Weather.Rainy:
+                    Console.WriteLine("*Rainy weather decreases defense rating.");
+                    break;
+
+                case Weather.Snowy:
+                    Console.WriteLine("*Snowy weather significantly decreases defense rating.");
+                    break;
+
+                case Weather.Windy:
+                    Console.WriteLine("*Windy weather reduces range.");
+                    break;
+
+                case Weather.Foggy:
+                    Console.WriteLine("*Foggy weather greatly reduces range and increases evasion chance.");
+                    break;
+
+                default:
+                    break;
+            }
+
             Console.ForegroundColor = ConsoleColor.White;
 
             // apply to all units

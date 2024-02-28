@@ -182,7 +182,9 @@ public abstract class Unit
         // check is dis ranged?
         bool isRangedUnit = this is RangedUnit;
         RangedUnit? unit = null;
-        if (isRangedUnit) unit = (RangedUnit)this; 
+        if (isRangedUnit) unit = (RangedUnit)this;
+
+        Console.ForegroundColor = ConsoleColor.Green;
 
         switch (effect)
         {
@@ -197,10 +199,6 @@ public abstract class Unit
                     unit.Range += 50;
                 }
 
-                HitChance.ModifyModifier(_hitMod);
-                DefenseRating.ModifyModifier(_defenseMod);
-                //Console.WriteLine("Sunny weather improves hit chance and range.");
-  
             break;
 
             case Weather.Cloudy:
@@ -214,11 +212,6 @@ public abstract class Unit
                     _range = unit.Range;
                     unit.Range -= 10;
                 }
-
-                HitChance.ModifyModifier(_hitMod);
-                DefenseRating.ModifyModifier(_defenseMod);
-                EvasionChance += _evasionChance;
-                //Console.WriteLine("Cloudy weather reduces evasion chance.");
 
             break;
 
@@ -234,11 +227,6 @@ public abstract class Unit
                     unit.Range -= 30;
                 }
 
-                HitChance.ModifyModifier(_hitMod);
-                DefenseRating.ModifyModifier(_defenseMod);
-                EvasionChance += _evasionChance;
-                //Console.WriteLine("Rainy weather decreases defense rating.");
-
             break;
 
             case Weather.Snowy:
@@ -252,11 +240,6 @@ public abstract class Unit
                     _range = unit.Range;
                     unit.Range -= 50;
                 }
-
-                HitChance.ModifyModifier(_hitMod);
-                DefenseRating.ModifyModifier(_defenseMod);
-                EvasionChance += _evasionChance;
-                //Console.WriteLine("Snowy weather significantly decreases defense rating.");
 
             break;
 
@@ -272,11 +255,6 @@ public abstract class Unit
                     unit.Range -= 40;
                 }
 
-                HitChance.ModifyModifier(_hitMod);
-                DefenseRating.ModifyModifier(_defenseMod);
-                EvasionChance += _evasionChance;
-                //Console.WriteLine("Windy weather reduces range.");
-
             break;
 
             case Weather.Foggy:
@@ -291,16 +269,16 @@ public abstract class Unit
                     unit.Range -= 80;
                 }
 
-                HitChance.ModifyModifier(_hitMod);
-                DefenseRating.ModifyModifier(_defenseMod);
-                EvasionChance += _evasionChance;
-                //Console.WriteLine("Foggy weather greatly reduces range and increases evasion chance.");
-
             break;
 
             default:
             break;
         }
+
+        // Apply weather changes
+        HitChance.ModifyModifier(_hitMod);
+        DefenseRating.ModifyModifier(_defenseMod);
+        EvasionChance += _evasionChance;
 
         // -- Weather changes to undo
         // All units
