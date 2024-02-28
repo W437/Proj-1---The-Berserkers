@@ -3,25 +3,24 @@
 // -----------------------------
 public struct Dice
 {
-    private uint Scalar;
-    private uint BaseDie;
+    private uint DiceCount;
+    private uint DiceSides;
     private int Modifier;
 
-    public Dice(uint scalar, uint baseDie, int modifier)
+    public Dice(uint diceCount, uint diceSides, int modifier)
     {
-        Scalar = scalar;
-        BaseDie = baseDie;
+        DiceCount = diceCount;
+        DiceSides = diceSides;
         Modifier = modifier;
     }
 
     public int Roll(bool randModifier = false)
     {
-        Random rand = new Random();
         int result = 0;
 
-        for (int i = 0; i < Scalar; i++)
+        for (int i = 0; i < DiceCount; i++)
         {
-            result += rand.Next(1, (int)BaseDie + 1);
+            result += Random.Shared.Next(1, (int)DiceSides + 1);
         }
 
         int randMod = Random.Shared.Next(-5, 8);
@@ -31,21 +30,21 @@ public struct Dice
 
     public override string ToString()
     {
-        return $"{Scalar}d{BaseDie}{(Modifier >= 0 ? "+" : "")}{Modifier})";
+        return $"{DiceCount}d{DiceSides}{(Modifier >= 0 ? "+" : "")}{Modifier})";
     }
 
     public override bool Equals(object obj)
     {
         if (obj is Dice dice)
         {
-            return dice.BaseDie == BaseDie && dice.Modifier == Modifier && dice.Scalar == Scalar;
+            return dice.DiceSides == DiceSides && dice.Modifier == Modifier && dice.DiceCount == DiceCount;
         }
         return false;
     }
 
     public override int GetHashCode()
     {
-        return (int)(Scalar ^ BaseDie ^ Modifier);
+        return (int)(DiceCount ^ DiceSides ^ Modifier);
     }
 
     public void ModifyModifier(int amount)
@@ -53,10 +52,21 @@ public struct Dice
         Modifier += amount;
     }
 
+    public void SetModifier(int amount)
+    {
+        Modifier = amount;
+    }
+
     public void ModifyScalar(int amount)
     {
-        Scalar = (uint)Math.Max(1, Scalar + amount);
+        DiceCount = (uint)Math.Max(1, DiceCount + amount);
     }
+
+    public int GetModifier()
+    {
+        return Modifier;
+    }
+
 }
 
 /*class Program1
