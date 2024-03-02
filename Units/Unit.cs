@@ -57,14 +57,24 @@ public abstract class Unit
         if (_isCritHit)
         {
             totalDamage = (int)(totalDamage * combinedCritMultiplier);
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($" with a critical hit for {totalDamage} damage!");
-        }
-        else
-        {
-            Console.WriteLine($" for {totalDamage} damage.");
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
-        // Target defends against this attack.
+        else
+        {
+            Console.Write($" for ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write($"{totalDamage}");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(" damage.");
+        }
+
+        Console.ForegroundColor = ConsoleColor.White;
+
+
         target.Defend(this, totalDamage);
     }
     
@@ -77,8 +87,8 @@ public abstract class Unit
             // General defense mechanism for all units - if (defense or stealth mode)
             if (RollDefenseRating() > 6)
             {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine($" => {GetType().Name} gracefully avoids the attack!\n");
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.WriteLine($"[ !!! ] {GetType().Name} gracefully avoids the attack!\n");
                 Console.ForegroundColor = ConsoleColor.White;
 
                 if (this is AssassinUnit && ((AssassinUnit)this).IsStealth)
@@ -103,8 +113,12 @@ public abstract class Unit
                     finalDamage = Math.Max(0, Math.Abs(damageAmount - Armor));
                 }
             }
+            Console.Write($"{GetType().Name} receives ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write($"{finalDamage}");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(" final damage.");
 
-            Console.WriteLine($"{GetType().Name} receives {finalDamage} final damage.");
             TakeDamage(finalDamage);
         }
     }
@@ -113,17 +127,17 @@ public abstract class Unit
     protected virtual void TakeDamage(int damage)
     {
         HP -= damage;
+        Console.ForegroundColor = ConsoleColor.Red;
         if (HP <= 0)
         {
             HP = 0;
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"[X] {GetType().Name} has been defeated!");
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine($"[ X ] {GetType().Name} has been defeated!");
         }
-        else
+/*        else
         {
-            Console.WriteLine($"{GetType().Name}'s remaining HP: {HP}");
-        }
+            Console.WriteLine($"[{GetType().Name}'s remaining HP: {HP}]");
+        }*/
+        Console.ForegroundColor = ConsoleColor.White;
     }
 
 
@@ -169,8 +183,6 @@ public abstract class Unit
             revertAction.Invoke();
         }
     }
-
-    protected virtual void ApplySpecificWeatherEffect(Weather effect) { }
 
     public virtual void ApplyWeather(Weather effect)
     {

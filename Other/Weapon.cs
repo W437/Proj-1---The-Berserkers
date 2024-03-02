@@ -63,7 +63,7 @@ public sealed class VenomStinger : Weapon
         {
             damage *= 2; // 2x damage in swift attack
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(" [Swift Attack! Damage 2X]");
+            Console.Write("[Swift Attack! Damage 2X] ");
             Console.ForegroundColor = ConsoleColor.White;
         }
     }
@@ -85,7 +85,7 @@ public sealed class PhantomSniper : Weapon
         if (rand <= swiftPercentage)
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(" [Swift Attack! Damage 1.5X]");
+            Console.Write("[Swift Attack! Damage 1.5X] ");
             Console.ForegroundColor = ConsoleColor.White;
             damage *= (int)1.5;
         }
@@ -106,9 +106,7 @@ public sealed class TrollStriker : Weapon
     {
         int lifestealAmount = (int)(damage * lifestealPercentage);
         attacker.Heal(lifestealAmount);
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"{target} left puzzled! TrollScout chants 'Abracadabra, health for me!' and scores {lifestealAmount} HP! Trolltastic!");
-        Console.ForegroundColor = ConsoleColor.White;
+        //Console.WriteLine($"{target} left puzzled! TrollScout chants 'Abracadabra, health for me!' and scores {lifestealAmount} HP! Trolltastic!");
     }
 }
 

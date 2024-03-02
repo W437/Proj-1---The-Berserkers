@@ -10,7 +10,7 @@ public abstract class AssassinUnit : Unit
         IsStealth = true;
     }
 
-    public override void Defend(Unit attacker, int damageAmount)
+/*    public override void Defend(Unit attacker, int damageAmount)
     {
         if(IsAlive())
         {
@@ -40,5 +40,5 @@ public abstract class AssassinUnit : Unit
                 TakeDamage(finalDamage);
             }
         }
-    }
+    }*/
 }

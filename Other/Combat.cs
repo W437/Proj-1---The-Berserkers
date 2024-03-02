@@ -1,6 +1,7 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
+using System.Drawing;
 using static Unit;
 
 public class Combat
@@ -10,6 +11,7 @@ public class Combat
     private Random random = new Random();
     private int weatherDuration = 0;
     private bool isWeatherActive = false;
+    private int combatRound = 0;
 
     public void StartCombat(List<Unit> team1, List<Unit> team2)
     {
@@ -20,7 +22,6 @@ public class Combat
         while (team1.Any(unit => unit.IsAlive()) && team2.Any(unit => unit.IsAlive()))
         {
             Console.ReadLine();
-
             // weather chk
             if (isWeatherActive && weatherDuration > 0)
             {
@@ -31,46 +32,96 @@ public class Combat
                 isWeatherActive = false;
             }
 
+            Console.WriteLine();
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine($" [ ========================= ROUND {++combatRound} ========================= ] ");
+            Console.ResetColor();
+            Console.WriteLine();
             ApplyRandomWeather();
 
-            // Print current state of combat
-            Console.WriteLine();
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.Write($"Current State: Team1: {team1.Count(unit => unit.IsAlive())} alive (total HP: {CalculateTeamHP(team1)}), Team2: {team2.Count(unit => unit.IsAlive())} alive (total HP: {CalculateTeamHP(team2)})");
+            Console.ResetColor();
+            Console.WriteLine($"Contestants:");
+
+            Console.WriteLine($" [+] {team1.Count(unit => unit.IsAlive())} alive (HP: {CalculateTeamHP(team1)}) ");
+            Console.ForegroundColor = ConsoleColor.White;
+            foreach (var unit in team1.Where(unit => unit.IsAlive()))
+                PrintAliveUnitInfo(unit, "T1", ConsoleColor.Blue);
+            Console.WriteLine($" [+] {team2.Count(unit => unit.IsAlive())} alive (HP: {CalculateTeamHP(team2)}) ");
+            Console.ForegroundColor = ConsoleColor.White;
+            foreach (var unit in team2.Where(unit => unit.IsAlive()))
+                PrintAliveUnitInfo(unit, "T2", ConsoleColor.Red);
+
+            Console.ForegroundColor = ConsoleColor.White;
+
+            
+
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine();
 
             // random units from each team to attack
-            var attackerFromTeam1 = team1.Where(unit => unit.IsAlive()).OrderBy(x => random.Next()).FirstOrDefault();
-            var targetFromTeam2 = team2.Where(unit => unit.IsAlive()).OrderBy(x => random.Next()).FirstOrDefault();
+            var attackerFromTeam1 = team1.Where(unit => unit.IsAlive())
+                .OrderBy(x => random.Next())
+                .FirstOrDefault();
 
-            var attackerFromTeam2 = team2.Where(unit => unit.IsAlive()).OrderBy(x => random.Next()).FirstOrDefault();
-            var targetFromTeam1 = team1.Where(unit => unit.IsAlive()).OrderBy(x => random.Next()).FirstOrDefault();
+            var targetFromTeam2 = team2.Where(unit => unit.IsAlive()).
+                OrderBy(x => random.Next()).
+                FirstOrDefault();
 
-            // attack
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n--- {attackerFromTeam1} vs. {targetFromTeam2} ---\n");
+            var attackerFromTeam2 = team2.Where(unit => unit.IsAlive())
+                .OrderBy(x => random.Next())
+                .FirstOrDefault();
+
+            var targetFromTeam1 = team1.Where(unit => unit.IsAlive())
+                .OrderBy(x => random.Next())
+                .FirstOrDefault();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"\n[ -A- ] {attackerFromTeam1.GetType().Name} ({attackerFromTeam1.HP} HP) attacks {targetFromTeam2.GetType().Name} ({targetFromTeam2.HP} HP)\n");
             Console.ForegroundColor = ConsoleColor.White;
             attackerFromTeam1?.Attack(targetFromTeam2);
 
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n--- {attackerFromTeam2} vs. {targetFromTeam1} ---\n");
+            Console.WriteLine($"\n[ -A- ] {attackerFromTeam2.GetType().Name} ({attackerFromTeam2.HP} HP) attacks {targetFromTeam1.GetType().Name} ({targetFromTeam1.HP} HP)\n");
             Console.ForegroundColor = ConsoleColor.White;
             attackerFromTeam2?.Attack(targetFromTeam1);
         }
 
         // Announce winner & resources stolen
         var winner = team1.Any(unit => unit.IsAlive()) ? "Team 1" : "Team 2";
-
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"\n--- {winner} wins! ---");
-
         int stolenResources = CalculateResourcesStolen(winner == "Team 1" ? team1 : team2);
-        Console.WriteLine($"\n --- {winner} has stolen {stolenResources} resources ---");
+
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
+        Console.WriteLine(@"
+         **********************************************
+         ************** BATTLE RESULTS ****************
+         **********************************************");
+
+        Console.ForegroundColor = winner == "Team 1" ? ConsoleColor.Blue : ConsoleColor.Red;
+        Console.WriteLine($@"
+              --- {winner.ToUpper()} EMERGES VICTORIOUS! ---
+        ");
 
         Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine($@"
+               {winner} claims the spoils of war
+                   seizing {stolenResources} resources!
+        ");
+
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
+        Console.WriteLine(@"
+         **********************************************");
+        Console.ForegroundColor = ConsoleColor.White;
+
+
+    }
+
+    private void PrintAliveUnitInfo(Unit unit, string teamTag, ConsoleColor unitColor)
+    {
+        Console.ForegroundColor = unitColor;
+        Console.WriteLine($"[{teamTag}] {unit.GetType().Name}({unit.HP})");
+        Console.ResetColor();
     }
 
     private void ApplyRandomWeather()
@@ -88,7 +139,7 @@ public class Combat
             Weather currentEffect = GetRandomWeather();
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"\n***{currentEffect} weather has started and will last for {weatherDuration} turns.");
+            Console.WriteLine($"***{currentEffect} weather has started and will last for {weatherDuration} turns.");
 
             switch (currentEffect)
             {
@@ -120,6 +171,7 @@ public class Combat
                     break;
             }
 
+            Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.White;
 
             // apply to all units
@@ -164,7 +216,7 @@ public class Demo
         {
             new DwarfBerserker(),
             new HumanSniper(),
-            new TrollGunslinger()
+            new TrollScout()
         };
 
         Combat combat = new Combat();
