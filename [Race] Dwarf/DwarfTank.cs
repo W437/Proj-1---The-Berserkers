@@ -4,7 +4,7 @@
 
 public sealed class DwarfTank : RangedUnit
 {
-    public DwarfTank() : base(damage: new Dice(2, 6, 3), hp: 70, armor: 10, range: 200)
+    public DwarfTank() : base(new Dice(2, 6, 3), new Dice(1, 5, 0), new Dice(1, 10, 0), hp: 80, armor: 10, range: 200)
     {
         UnitRace = Race.Dwarf;
         SetCritChance(0.10f);
@@ -12,8 +12,5 @@ public sealed class DwarfTank : RangedUnit
         SetCarryCapacity(90);
         SetEvasionChance(0.15f);
         EquippedWeapon = new BoltProjectile();
-        DefenseRating = new Dice(1, 10, 0);
-        HitChance = new Dice(1, 5, 0);
     }
-
 }

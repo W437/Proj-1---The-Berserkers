@@ -3,8 +3,9 @@
 // -----------------------------
 public abstract class RangedUnit : Unit
 {
-    public float Range { get; set; }
-    protected RangedUnit(Dice damage, int hp, int armor, float range) : base(damage, hp, armor)
+    public int Range { get; set; }
+    protected RangedUnit(Dice damage, Dice hitChance, Dice defense, int hp, int armor, int range)
+        : base(damage, hitChance, defense, hp, armor)
     {
         Range = range;
     }

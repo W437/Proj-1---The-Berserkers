@@ -1,7 +1,7 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
-public struct Dice
+public struct Dice : IRandomProvider
 {
     private uint DiceCount;
     private uint DiceSides;
@@ -14,16 +14,26 @@ public struct Dice
         Modifier = modifier;
     }
 
+    public int Next(int minValue, int maxValue)
+    {
+        return Random.Shared.Next(minValue, maxValue);
+    }
+
+    public double NextDouble()
+    {
+        return Random.Shared.NextDouble();
+    }
+
     public int Roll(bool randModifier = false)
     {
         int result = 0;
 
         for (int i = 0; i < DiceCount; i++)
         {
-            result += Random.Shared.Next(1, (int)DiceSides + 1);
+            result += Next(1, (int)DiceSides + 1);
         }
 
-        int randMod = Random.Shared.Next(-5, 8);
+        int randMod = Next(-5, 8);
 
         return randModifier ? (result + randMod) : result + Modifier;
     }

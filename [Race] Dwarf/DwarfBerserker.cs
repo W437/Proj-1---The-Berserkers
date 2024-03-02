@@ -3,7 +3,7 @@
 // -----------------------------
 public sealed class DwarfBerserker : AssassinUnit
 {
-    public DwarfBerserker() : base(damage: new Dice(3, 7, 1), hp: 50, armor: 15)
+    public DwarfBerserker() : base(new Dice(3, 7, 1), new Dice(1, 5, 0), new Dice(1, 10, 0), hp: 50, armor: 15)
     {
         UnitRace = Race.Dwarf;
         SetCritChance(0.15f);
@@ -11,8 +11,5 @@ public sealed class DwarfBerserker : AssassinUnit
         SetCarryCapacity(70);
         SetEvasionChance(0.15f);
         EquippedWeapon = new Dagger();
-        DefenseRating = new Dice(1, 10, 0);
-        HitChance = new Dice(1, 5, 0);
     }
-
 }

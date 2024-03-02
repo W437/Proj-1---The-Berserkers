@@ -207,15 +207,15 @@ public class Demo
     {
         List<Unit> team1 = new List<Unit>
         {
-            new DwarfArcher(),
-            new TrollShaman(),
+            new DwarfBerserker(),
+            new HumanSniper(),
             new DwarfTank()
         };
 
         List<Unit> team2 = new List<Unit>
         {
-            new DwarfBerserker(),
-            new HumanSniper(),
+            new DwarfArcher(),
+            new TrollShaman(),
             new TrollScout()
         };
 

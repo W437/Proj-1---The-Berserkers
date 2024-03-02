@@ -3,6 +3,7 @@
 // -----------------------------
 public abstract class Unit
 {
+/*    protected IRandomProvider RandomProvider { get; private set; }*/
     public Weapon? EquippedWeapon { get; set; }
     protected Dice Damage { get; set; }
     protected Dice HitChance { get; set; }
@@ -18,13 +19,14 @@ public abstract class Unit
     public void SetCritMultiplier(float v) => CritMultiplier = v;
     public void SetEvasionChance(float v) => EvasionChance = v;
 
-    protected Unit(Dice damage, int hp, int armor)
+    protected Unit(Dice damage, Dice hitChance, Dice defense, int hp, int armor)
     {
-        Damage = damage;
         HP = hp;
         Armor = armor;
+        Damage = damage;
+        HitChance = hitChance;
+        DefenseRating = defense;
     }
-
 
     public void Attack(Unit target)
     {
@@ -32,7 +34,7 @@ public abstract class Unit
 
         Console.Write($"{GetType().Name} attacks ");
 
-        if (HitChance.Roll() <= 1)
+        if (Damage.Roll() <= 1)
         {
             Console.WriteLine("and misses.");
             return;
@@ -45,7 +47,7 @@ public abstract class Unit
             combinedCritChance += 0.2f; // Stealth mode increases crit chance (for assassin unit)
         }
 
-        bool _isCritHit = combinedCritChance > Random.Shared.NextDouble();
+        bool _isCritHit = combinedCritChance > HitChance.NextDouble();
 
         int weaponDamage = EquippedWeapon.Use(this, target, isCritHit: _isCritHit);
         int totalDamage = weaponDamage + RollDamage();
@@ -85,7 +87,7 @@ public abstract class Unit
         {
             int finalDamage = 0;
             // General defense mechanism for all units - if (defense or stealth mode)
-            if (RollDefenseRating() > 6)
+            if (DefenseRating.Roll() > 6)
             {
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
                 Console.WriteLine($"[ !!! ] {GetType().Name} gracefully avoids the attack!\n");
@@ -189,7 +191,7 @@ public abstract class Unit
         int _hitMod = 0;
         int _defenseMod = 0;
         float _evasionChance = 0;
-        float _range = 0;
+        int _range = 0;
 
         // check is dis ranged?
         bool isRangedUnit = this is RangedUnit;

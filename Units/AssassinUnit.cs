@@ -5,7 +5,8 @@ public abstract class AssassinUnit : Unit
 {
     public virtual bool IsStealth { get; set; }
 
-    protected AssassinUnit(Dice damage, int hp, int armor) : base(damage, hp, armor) 
+    protected AssassinUnit(Dice damage, Dice hitChance, Dice defense, int hp, int armor)
+        : base(damage, hitChance, defense, hp, armor)
     {
         IsStealth = true;
     }
