@@ -16,7 +16,7 @@ public struct Dice : IRandomProvider
 
     public int Next(int minValue, int maxValue)
     {
-        return Random.Shared.Next(minValue, maxValue);
+        return Modifier + Random.Shared.Next(minValue, maxValue+1);
     }
 
     public double NextDouble()

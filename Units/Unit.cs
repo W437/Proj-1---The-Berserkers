@@ -3,29 +3,31 @@
 // -----------------------------
 public abstract class Unit
 {
-/*    protected IRandomProvider RandomProvider { get; private set; }*/
+    protected IRandomProvider RandomProvider { get; private set; }
     public Weapon? EquippedWeapon { get; set; }
-    protected Dice Damage { get; set; }
+/*    protected Dice Damage { get; set; }
     protected Dice HitChance { get; set; }
-    protected Dice DefenseRating { get; set; }
+    protected Dice DefenseRating { get; set; }*/
     public int HP { get; private set; }
     protected int Armor { get; private set; } // armor mitigates damage
     public int CarryCapacity { get; private set; }
     public float CritChance { get; private set; }
     public float CritMultiplier { get; private set; }
-    public virtual float EvasionChance { get; private set; }
     public void SetCarryCapacity(int v) => CarryCapacity = v;
     public void SetCritChance(float v) => CritChance = v;
     public void SetCritMultiplier(float v) => CritMultiplier = v;
-    public void SetEvasionChance(float v) => EvasionChance = v;
 
-    protected Unit(Dice damage, Dice hitChance, Dice defense, int hp, int armor)
+    // Modifiers
+    protected float HitChanceModifier { get; set; } = 0;
+    protected float DefenseRatingModifier { get; set; } = 0;
+    protected float RangeModifier { get; set; } = 0;
+
+
+    protected Unit(IRandomProvider randomProvider, int hp, int armor)
     {
         HP = hp;
         Armor = armor;
-        Damage = damage;
-        HitChance = hitChance;
-        DefenseRating = defense;
+        RandomProvider = randomProvider;
     }
 
     public void Attack(Unit target)
@@ -34,7 +36,9 @@ public abstract class Unit
 
         Console.Write($"{GetType().Name} attacks ");
 
-        if (Damage.Roll() <= 1)
+        int baseChance = RandomProvider.Next(1, 6);
+
+        if (baseChance <= HitChanceModifier + 2)
         {
             Console.WriteLine("and misses.");
             return;
@@ -47,10 +51,10 @@ public abstract class Unit
             combinedCritChance += 0.2f; // Stealth mode increases crit chance (for assassin unit)
         }
 
-        bool _isCritHit = combinedCritChance > HitChance.NextDouble();
+        bool _isCritHit = combinedCritChance > RandomProvider.NextDouble();
 
         int weaponDamage = EquippedWeapon.Use(this, target, isCritHit: _isCritHit);
-        int totalDamage = weaponDamage + RollDamage();
+        int totalDamage = weaponDamage + RandomProvider.Next(1, 20);
 
         float combinedCritMultiplier = CritMultiplier + EquippedWeapon.CritMultiplierBoost;
 
@@ -87,7 +91,10 @@ public abstract class Unit
         {
             int finalDamage = 0;
             // General defense mechanism for all units - if (defense or stealth mode)
-            if (DefenseRating.Roll() > 6)
+
+            int baseChance = RandomProvider.Next(1, 10);
+
+            if (baseChance > DefenseRatingModifier + 7)
             {
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
                 Console.WriteLine($"[ !!! ] {GetType().Name} gracefully avoids the attack!\n");
@@ -146,10 +153,7 @@ public abstract class Unit
     public virtual void Heal(int amount) { HP += amount; }
    
 
-    public bool IsAlive()
-    {
-        return HP > 0;
-    }
+    public bool IsAlive() { return HP > 0; }
 
 
     public Race UnitRace { get; set; }
@@ -188,11 +192,6 @@ public abstract class Unit
 
     public virtual void ApplyWeather(Weather effect)
     {
-        int _hitMod = 0;
-        int _defenseMod = 0;
-        float _evasionChance = 0;
-        int _range = 0;
-
         // check is dis ranged?
         bool isRangedUnit = this is RangedUnit;
         RangedUnit? unit = null;
@@ -200,16 +199,20 @@ public abstract class Unit
 
         Console.ForegroundColor = ConsoleColor.Green;
 
+        float originalHitChanceModifier = HitChanceModifier;
+        float originalDefenseRatingModifier = DefenseRatingModifier;
+        int? originalRange = null;
+
         switch (effect)
         {
             case Weather.Sunny:
 
-                _hitMod = 3;
-                _defenseMod = 2;
+                HitChanceModifier += -1; // (+) is difficulty in hitting (-) is easier
+                DefenseRatingModifier += 1; // (+) increase threshold in avoiding attack
 
                 if (isRangedUnit)
                 {
-                    _range = unit.Range;
+                    originalRange = unit.Range;
                     unit.Range += 50;
                 }
 
@@ -217,13 +220,12 @@ public abstract class Unit
 
             case Weather.Cloudy:
 
-                _hitMod = -1;
-                _defenseMod = -1;
-                _evasionChance = 0.10f;
+                HitChanceModifier += 2;
+                DefenseRatingModifier += 1;
 
                 if (isRangedUnit)
                 {
-                    _range = unit.Range;
+                    originalRange = unit.Range;
                     unit.Range -= 10;
                 }
 
@@ -231,13 +233,12 @@ public abstract class Unit
 
             case Weather.Rainy:
 
-                _hitMod = -2;
-                _defenseMod = -1;
-                _evasionChance = 0.05f;
+                HitChanceModifier += 2;
+                DefenseRatingModifier += 2;
 
                 if (isRangedUnit)
                 {
-                    _range = unit.Range;
+                    originalRange = unit.Range;
                     unit.Range -= 30;
                 }
 
@@ -245,13 +246,12 @@ public abstract class Unit
 
             case Weather.Snowy:
 
-                _hitMod = -1;
-                _defenseMod = -2;
-                _evasionChance = -0.10f;
+                HitChanceModifier += 3;
+                DefenseRatingModifier += -3;
 
                 if (isRangedUnit)
                 {
-                    _range = unit.Range;
+                    originalRange = unit.Range;
                     unit.Range -= 50;
                 }
 
@@ -259,13 +259,12 @@ public abstract class Unit
 
             case Weather.Windy:
 
-                _hitMod = -1;
-                _defenseMod = -1;
-                _evasionChance = 0.10f;
+                HitChanceModifier += 2;
+                DefenseRatingModifier += 1;
 
                 if (isRangedUnit)
                 {
-                    _range = unit.Range;
+                    originalRange = unit.Range;
                     unit.Range -= 40;
                 }
 
@@ -273,13 +272,12 @@ public abstract class Unit
 
             case Weather.Foggy:
 
-                _hitMod = -2;
-                _defenseMod = 1;
-                _evasionChance = 0.20f;
+                HitChanceModifier += 3;
+                DefenseRatingModifier += 2;
 
                 if (isRangedUnit)
                 {
-                    _range = unit.Range;
+                    originalRange = unit.Range;
                     unit.Range -= 80;
                 }
 
@@ -289,27 +287,15 @@ public abstract class Unit
             break;
         }
 
-        // Apply weather changes
-        HitChance.ModifyModifier(_hitMod);
-        DefenseRating.ModifyModifier(_defenseMod);
-        EvasionChance += _evasionChance;
-
         // -- Weather changes to undo
         // All units
-        revertList.Push(() => HitChance.ModifyModifier(-_hitMod));
-        revertList.Push(() => DefenseRating.ModifyModifier(-_defenseMod));
-        revertList.Push(() => EvasionChance -= _evasionChance);
+        revertList.Push(() => HitChanceModifier = originalHitChanceModifier);
+        revertList.Push(() => DefenseRatingModifier = originalDefenseRatingModifier);
 
         // RangedUnit only
-        if (isRangedUnit) revertList.Push(() => unit.Range = _range);
+        if (isRangedUnit) revertList.Push(() => unit.Range = (int)originalRange);
 
         //ApplySpecificWeatherEffect(effect); // for (subclasses w unique properties (was for (Range) unused)
     }
 
-
-    public int RollDamage() => Damage.Roll();
-
-    public int RollHitChance() => HitChance.Roll();
-
-    public int RollDefenseRating() => DefenseRating.Roll();
 }

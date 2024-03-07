@@ -164,7 +164,7 @@ public class Combat
                     break;
 
                 case Weather.Foggy:
-                    Console.WriteLine("*Foggy weather greatly reduces range and increases evasion chance.");
+                    Console.WriteLine("*Foggy weather greatly reduces range and increases defense chance.");
                     break;
 
                 default:
@@ -205,18 +205,20 @@ public class Demo
 {
     public static void Main(string[] args)
     {
+        Bag bagRandomProvider = new Bag(Enumerable.Range(1, 7));
+
         List<Unit> team1 = new List<Unit>
         {
-            new DwarfBerserker(),
-            new HumanSniper(),
-            new DwarfTank()
+            new DwarfBerserker(bagRandomProvider),
+            new HumanSniper(new Dice()),
+            new DwarfTank(new Dice())
         };
 
         List<Unit> team2 = new List<Unit>
         {
-            new DwarfArcher(),
-            new TrollShaman(),
-            new TrollScout()
+            new DwarfArcher(new Dice()),
+            new TrollShaman(new Dice()),
+            new TrollScout(new Dice())
         };
 
         Combat combat = new Combat();
