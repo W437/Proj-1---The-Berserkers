@@ -1,4 +1,7 @@
-﻿public class Bag : IRandomProvider
+﻿// ---- C# II (Dor Ben Dor) ----
+// Wael Abd Elal
+// -----------------------------
+public class Bag : IRandomProvider
 {
     private List<int> numbers;
     private int index;

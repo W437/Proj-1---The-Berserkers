@@ -3,7 +3,7 @@
 // -----------------------------
 public sealed class TrollScout : AssassinUnit
 {
-    public TrollScout(IRandomProvider randomProvider) : base(randomProvider, hp: 65, armor: 20)
+    public TrollScout(IRandomProvider randomProvider) : base(randomProvider, hp: 75, armor: 20)
     {
         UnitRace = Race.Troll;
         SetCritChance(0.15f);

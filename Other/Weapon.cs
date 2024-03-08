@@ -1,4 +1,6 @@
-﻿
+﻿// ---- C# II (Dor Ben Dor) ----
+// Wael Abd Elal
+// -----------------------------
 public abstract class Weapon
 {
     public int BaseDamage { get; private set; }

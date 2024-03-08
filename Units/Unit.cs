@@ -20,7 +20,6 @@ public abstract class Unit
     // Modifiers
     protected float HitChanceModifier { get; set; } = 0;
     protected float DefenseRatingModifier { get; set; } = 0;
-    protected float RangeModifier { get; set; } = 0;
 
 
     protected Unit(IRandomProvider randomProvider, int hp, int armor)

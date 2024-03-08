@@ -7,7 +7,7 @@ public sealed class DwarfArcher : RangedUnit
     {
         UnitRace = Race.Dwarf;
         SetCritChance(0.20f);
-        SetCritMultiplier(1.1f);
+        SetCritMultiplier(1.35f);
         SetCarryCapacity(70);
         EquippedWeapon = new ArrowProjectile();
     }

@@ -1,11 +1,11 @@
 ﻿// ---- C# II (Dor Ben Dor) ----
 // Wael Abd Elal
 // -----------------------------
-using System.Drawing;
 using static Unit;
 
 public class Combat
 {
+    private IRandomProvider RandomProvider { get; set; }
     private List<Unit>? team1;
     private List<Unit>? team2;
     private Random random = new Random();
@@ -126,7 +126,7 @@ public class Combat
 
     private void ApplyRandomWeather()
     {
-        if (!isWeatherActive && random.NextDouble() < 0.25) // 25% chance
+        if (!isWeatherActive && RandomProvider.NextDouble() < 0.25) // 25% chance
         {
             // reset weather
             foreach (var unit in team1.Concat(team2))
@@ -135,7 +135,7 @@ public class Combat
             }
 
             isWeatherActive = true;
-            weatherDuration = random.Next(1, 5); // 1 to 4 steps
+            weatherDuration = RandomProvider.Next(1, 4); // 1 to 4 steps
             Weather currentEffect = GetRandomWeather();
 
             Console.ForegroundColor = ConsoleColor.Yellow;

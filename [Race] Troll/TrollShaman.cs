@@ -3,7 +3,7 @@
 // -----------------------------
 public sealed class TrollShaman : RangedUnit
 {
-    public TrollShaman(IRandomProvider randomProvider) : base(randomProvider, hp: 70, armor: 10, range: 250)
+    public TrollShaman(IRandomProvider randomProvider) : base(randomProvider, hp: 75, armor: 10, range: 250)
     {
         UnitRace = Race.Troll;
         SetCritChance(0.15f);

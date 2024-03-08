@@ -3,7 +3,7 @@
 // -----------------------------
 public sealed class HumanSniper : AssassinUnit
 {
-    public HumanSniper(IRandomProvider randomProvider) : base(randomProvider, hp: 80, armor: 15)
+    public HumanSniper(IRandomProvider randomProvider) : base(randomProvider, hp: 75, armor: 15)
     {
         UnitRace = Race.Human;
         SetCritChance(0.15f);

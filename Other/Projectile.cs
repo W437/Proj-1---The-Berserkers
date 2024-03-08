@@ -1,4 +1,7 @@
-﻿public class Projectile : Weapon
+﻿// ---- C# II (Dor Ben Dor) ----
+// Wael Abd Elal
+// -----------------------------
+public class Projectile : Weapon
 {
     public int Range { get; set; }
     public Projectile(int baseDamage, float additionalCritChance, float critMultiplierBoost) : base(baseDamage, additionalCritChance, critMultiplierBoost) { }

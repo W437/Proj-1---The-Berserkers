@@ -4,7 +4,7 @@
 
 public sealed class DwarfTank : RangedUnit
 {
-    public DwarfTank(IRandomProvider randomProvider) : base(randomProvider, hp: 80, armor: 10, range: 200)
+    public DwarfTank(IRandomProvider randomProvider) : base(randomProvider, hp: 75, armor: 10, range: 200)
     {
         UnitRace = Race.Dwarf;
         SetCritChance(0.10f);
